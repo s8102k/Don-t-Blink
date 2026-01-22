@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'row',
         marginBottom: 16,
+        paddingHorizontal: 24,
     },
     primary: {
         backgroundColor: Palette.primaryPink,

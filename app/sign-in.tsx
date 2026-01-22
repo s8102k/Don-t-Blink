@@ -14,7 +14,7 @@ import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, Vi
 
 export default function SignIn() {
     const router = useRouter();
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -22,15 +22,13 @@ export default function SignIn() {
     const { handleGoogleSignIn, handleAppleSignIn, isLoading: isSocialLoading } = useSocialAuth();
 
     const handleSignIn = async () => {
-        if (!username || !password) {
+        if (!email || !password) {
             Alert.alert('Error', 'Please fill in all fields');
             return;
         }
 
         setIsLoading(true);
         try {
-            // Construct pseudo-email from username
-            const email = `${username.replace(/\s+/g, '').toLowerCase()}@dontblink.app`;
             await signInWithEmailAndPassword(auth, email, password);
             router.replace('/(tabs)/home'); // Navigate to home on success
         } catch (error: any) {
@@ -72,11 +70,12 @@ export default function SignIn() {
 
                     <View style={styles.form}>
                         <NeonInput
-                            icon="person.fill"
-                            placeholder="Username"
-                            value={username}
-                            onChangeText={setUsername}
+                            icon="envelope.fill"
+                            placeholder="Email"
+                            value={email}
+                            onChangeText={setEmail}
                             autoCapitalize="none"
+                            keyboardType="email-address"
                         />
                         <NeonInput
                             icon="lock.fill"
@@ -87,7 +86,7 @@ export default function SignIn() {
                         />
 
                         <View style={styles.forgotPassword}>
-                            <Link href="/help" asChild>
+                            <Link href="/forgot-password" asChild>
                                 <Text style={styles.linkText}>Forgot Password?</Text>
                             </Link>
                         </View>

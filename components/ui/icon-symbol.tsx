@@ -24,6 +24,7 @@ const MAPPING = {
   'eye.fill': 'visibility',
   'eye.slash.fill': 'visibility-off',
   'photo.fill': 'image',
+  'checkmark.circle.fill': 'check-circle',
 } as IconMapping;
 
 /**
