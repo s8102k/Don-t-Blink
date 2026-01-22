@@ -1,7 +1,8 @@
 import { GradientBackground } from '@/components/GradientBackground';
 import { LeaderboardRow } from '@/components/LeaderboardRow';
+import { auth } from '@/config/firebase';
 import { FONTS, Palette } from '@/constants/theme';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -19,11 +20,27 @@ const LEADERBOARD_DATA = [
     { id: '10', username: 'Visionary', score: 6800, rank: 10 },
 ];
 
-const CURRENT_USER = { id: '42', username: 'You', score: 5400, rank: 42 };
+// Mock Data
+// const CURRENT_USER = { id: '42', username: 'You', score: 5400, rank: 42 };
 
 export default function LeaderboardScreen() {
     const insets = useSafeAreaInsets();
+    const user = auth.currentUser;
     const [filter, setFilter] = useState<'global' | 'friends'>('global');
+
+    const currentUserData = useMemo(() => {
+        const rawName = user?.displayName || 'You';
+        // Handle Name|Email format
+        const cleanName = rawName.split('|')[0];
+
+        return {
+            id: user?.uid || 'guest',
+            username: cleanName,
+            score: 5400, // Still mock score for now
+            rank: 42,
+            avatarUrl: user?.photoURL
+        };
+    }, [user]);
 
     return (
         <GradientBackground>
@@ -63,9 +80,9 @@ export default function LeaderboardScreen() {
                 {/* User Rank Footer */}
                 <View style={[styles.userRankFooter, { paddingBottom: insets.bottom + 10 }]}>
                     <LeaderboardRow
-                        rank={CURRENT_USER.rank}
-                        username={CURRENT_USER.username}
-                        score={CURRENT_USER.score}
+                        rank={currentUserData.rank}
+                        username={currentUserData.username}
+                        score={currentUserData.score}
                         isCurrentUser
                     />
                 </View>

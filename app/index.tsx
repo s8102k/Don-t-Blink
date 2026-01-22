@@ -1,15 +1,28 @@
 import { GradientBackground } from '@/components/GradientBackground';
 import { Logo } from '@/components/Logo';
 import { ProgressBar } from '@/components/ProgressBar';
+import { auth } from '@/config/firebase';
 import { FONTS, Palette } from '@/constants/theme';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function Splash() {
     const router = useRouter();
     const [progress, setProgress] = useState(0);
+    const [initializing, setInitializing] = useState(true);
+    const [user, setUser] = useState<User | null>(null);
+
+    // Handle user state changes
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            setUser(user);
+            if (initializing) setInitializing(false);
+        });
+        return unsubscribe;
+    }, []);
 
     useEffect(() => {
         const duration = 2500; // 2.5 seconds splash
@@ -22,9 +35,13 @@ export default function Splash() {
                 const next = prev + stepSize;
                 if (next >= 1) {
                     clearInterval(timer);
-                    // Navigate to tabs layout
+                    // Navigate based on auth state
                     setTimeout(() => {
-                        router.replace('/home');
+                        if (user) {
+                            router.replace('/(tabs)/home' as any);
+                        } else {
+                            router.replace('/sign-in' as any);
+                        }
                     }, 200);
                     return 1;
                 }

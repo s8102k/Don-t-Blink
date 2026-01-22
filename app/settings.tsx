@@ -115,14 +115,7 @@ export default function SettingsScreen() {
                         onPress={() => { }}
                     />
 
-                    <View style={styles.spacer} />
-                    <SettingsItem
-                        icon="log-out-outline"
-                        label="Log Out"
-                        type="button"
-                        isDestructive
-                        onPress={() => { }}
-                    />
+
 
                     <View style={styles.footer}>
                         <Text style={styles.footerText}>DON'T BLINK v1.0.4</Text>
