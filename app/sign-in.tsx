@@ -110,6 +110,13 @@ export default function SignIn() {
                                 <Text style={styles.linkTextBold}>Sign Up</Text>
                             </Link>
                         </View>
+
+                        {/* TEMPORARY: Test Button for Reset Password UI */}
+                        <Link href={{ pathname: "/reset-password", params: { oobCode: "TEST_MODE" } }} asChild>
+                            <Text style={styles.debugLink}>
+                                (Debug) Test Reset Password Screen
+                            </Text>
+                        </Link>
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
@@ -173,5 +180,13 @@ const styles = StyleSheet.create({
         color: Palette.textMuted,
         fontFamily: FONTS.regular,
         fontSize: 14,
+    },
+    debugLink: {
+        color: Palette.primaryPink,
+        fontFamily: FONTS.medium,
+        fontSize: 14,
+        textAlign: 'center',
+        marginTop: 20,
+        opacity: 0.5,
     },
 });

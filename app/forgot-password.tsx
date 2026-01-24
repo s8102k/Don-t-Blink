@@ -25,7 +25,18 @@ export default function ForgotPassword() {
 
         setIsLoading(true);
         try {
-            await sendPasswordResetEmail(auth, email);
+            await sendPasswordResetEmail(auth, email, {
+                handleCodeInApp: true,
+                url: 'https://don-t-blink-39c5d.firebaseapp.com/reset-password', // Using standard Firebase domain pattern or placeholder
+                iOS: {
+                    bundleId: 'com.dontblink.app',
+                },
+                android: {
+                    packageName: 'com.dontblink.app',
+                    installApp: true,
+                    minimumVersion: '1',
+                },
+            });
             setIsSubmitted(true);
         } catch (error: any) {
             console.log('Reset password error:', error.code, error.message);

@@ -13,16 +13,18 @@ export const useSocialAuth = () => {
 
     // Google Request
     const [request, response, promptAsync] = Google.useAuthRequest({
-        // Placeholder IDs - User must replace these!
-        iosClientId: 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com',
-        androidClientId: 'YOUR_ANDROID_CLIENT_ID.apps.googleusercontent.com',
-        webClientId: 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com',
+        iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+        androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID,
+        webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
     });
 
     useEffect(() => {
+        if (request) {
+            console.log('GOOGLE_REDIRECT_URI:', request.redirectUri);
+        }
         if (response?.type === 'success') {
-            const { id_token } = response.params;
-            const credential = GoogleAuthProvider.credential(id_token);
+            const { id_token, access_token } = response.params;
+            const credential = GoogleAuthProvider.credential(id_token || null, access_token || null);
             handleFirebaseSignIn(credential);
         }
     }, [response]);
