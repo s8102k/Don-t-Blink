@@ -19,7 +19,10 @@ export default function SignIn() {
     const [isLoading, setIsLoading] = useState(false);
 
     // Social Auth Hook
-    const { handleGoogleSignIn, handleAppleSignIn, isLoading: isSocialLoading } = useSocialAuth();
+    const { handleGoogleSignIn, handleAppleSignIn, isLoading: isSocialLoading } = useSocialAuth(() => {
+        // Navigate on successful social login
+        router.replace('/(tabs)/home');
+    });
 
     const handleSignIn = async () => {
         if (!email || !password) {

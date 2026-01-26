@@ -20,7 +20,13 @@ export default function SignUp() {
     const [password, setPassword] = useState('');
 
     // Social Auth Hook
-    const { handleGoogleSignIn, handleAppleSignIn, isLoading: isSocialLoading } = useSocialAuth();
+    const { handleGoogleSignIn, handleAppleSignIn, isLoading: isSocialLoading } = useSocialAuth(() => {
+        // Navigate on successful social sign up
+        // Currently we create the user and they might need to verify email if we enforce it, 
+        // but typically social auth emails are considered verified or we let them in.
+        // For consistent flow, we go to home.
+        router.replace('/(tabs)/home');
+    });
 
     const [isLoading, setIsLoading] = useState(false);
 

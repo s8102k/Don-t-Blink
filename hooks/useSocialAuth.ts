@@ -1,58 +1,66 @@
 import { auth } from '@/config/firebase';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import * as AppleAuthentication from 'expo-apple-authentication';
-import * as Google from 'expo-auth-session/providers/google';
-import * as WebBrowser from 'expo-web-browser';
 import { GoogleAuthProvider, OAuthProvider, signInWithCredential } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 
-// Initialize WebBrowser for Expo Auth Session
-WebBrowser.maybeCompleteAuthSession();
-
-export const useSocialAuth = () => {
+export const useSocialAuth = (onAuthSuccess?: () => void) => {
     const [isLoading, setIsLoading] = useState(false);
 
-    // Google Request
-    const [request, response, promptAsync] = Google.useAuthRequest({
-        iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
-        androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID,
-        webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-    });
-
     useEffect(() => {
-        if (request) {
-            console.log('GOOGLE_REDIRECT_URI:', request.redirectUri);
-        }
-        if (response?.type === 'success') {
-            const { id_token, access_token } = response.params;
-            const credential = GoogleAuthProvider.credential(id_token || null, access_token || null);
-            handleFirebaseSignIn(credential);
-        }
-    }, [response]);
+        GoogleSignin.configure({
+            webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+        });
+    }, []);
 
-    const handleFirebaseSignIn = async (credential: any) => {
+    const handleGoogleSignIn = async () => {
         setIsLoading(true);
         try {
-            await signInWithCredential(auth, credential);
-            // Router navigation is handled by the auth state listener in the screen or global listener
+            await GoogleSignin.hasPlayServices();
+            const response = await GoogleSignin.signIn();
+            const idToken = response.data?.idToken;
+            const credential = GoogleAuthProvider.credential(idToken);
+            await handleFirebaseSignIn(credential);
         } catch (error: any) {
-            console.error('Social Auth Error:', error);
-            alert(error.message);
+            console.error('Google Sign-In Error:', error);
+            if (error.code === 'SIGN_IN_CANCELLED') {
+                // User cancelled the login flow
+            } else if (error.code === 'IN_PROGRESS') {
+                // Operation (e.g. sign in) is in progress already
+                alert('Sign in is already in progress');
+            } else if (error.code === 'PLAY_SERVICES_NOT_AVAILABLE') {
+                // Play services not available or outdated
+                alert('Google Play Services not available');
+            } else {
+                alert('Google Sign-In failed');
+            }
         } finally {
             setIsLoading(false);
         }
     };
 
-    const handleGoogleSignIn = async () => {
+    const handleFirebaseSignIn = async (credential: any) => {
         try {
-            await promptAsync();
-        } catch (e) {
-            console.error("Google Prompt Error", e);
+            await signInWithCredential(auth, credential);
+            if (onAuthSuccess) {
+                onAuthSuccess();
+            }
+        } catch (error: any) {
+            console.error('Firebase Auth Error:', error);
+            alert(error.message);
         }
     };
 
     const handleAppleSignIn = async () => {
         setIsLoading(true);
         try {
+            const isAvailable = await AppleAuthentication.isAvailableAsync();
+            if (!isAvailable) {
+                alert('Apple Sign-In is not available on this device');
+                setIsLoading(false);
+                return;
+            }
+
             const credential = await AppleAuthentication.signInAsync({
                 requestedScopes: [
                     AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
@@ -67,7 +75,7 @@ export const useSocialAuth = () => {
                     idToken: identityToken,
                     // rawNonce: ... (needed for verified security, simplified here)
                 });
-                await signInWithCredential(auth, firebaseCredential);
+                await handleFirebaseSignIn(firebaseCredential);
             }
         } catch (e: any) {
             if (e.code === 'ERR_CANCELED') {
@@ -85,6 +93,6 @@ export const useSocialAuth = () => {
         handleGoogleSignIn,
         handleAppleSignIn,
         isLoading,
-        request // return request object if needed for disabling button
     };
 };
+
