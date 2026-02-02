@@ -1,7 +1,6 @@
 import { GradientBackground } from '@/components/GradientBackground';
 import { LeaderboardRow } from '@/components/LeaderboardRow';
-import { auth } from '@/config/firebase';
-import { FONTS, Palette } from '@/constants/theme';
+import { FONTS, useTheme } from '@/constants/theme';
 import React, { useMemo, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -20,12 +19,16 @@ const LEADERBOARD_DATA = [
     { id: '10', username: 'Visionary', score: 6800, rank: 10 },
 ];
 
-// Mock Data
-// const CURRENT_USER = { id: '42', username: 'You', score: 5400, rank: 42 };
-
 export default function LeaderboardScreen() {
     const insets = useSafeAreaInsets();
-    const user = auth.currentUser;
+    const { theme } = useTheme();
+
+    // Mock User
+    const user = {
+        displayName: 'User',
+        uid: '123',
+        photoURL: null
+    };
     const [filter, setFilter] = useState<'global' | 'friends'>('global');
 
     const currentUserData = useMemo(() => {
@@ -50,12 +53,12 @@ export default function LeaderboardScreen() {
                 {/* Filter Toggle */}
                 <View style={styles.filterContainer}>
                     <TouchableOpacity
-                        style={[styles.filterButton, filter === 'global' && styles.filterActive]}
+                        style={[styles.filterButton, filter === 'global' && { backgroundColor: theme.primary }]}
                         onPress={() => setFilter('global')}>
                         <Text style={[styles.filterText, filter === 'global' && styles.filterTextActive]}>GLOBAL</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={[styles.filterButton, filter === 'friends' && styles.filterActive]}
+                        style={[styles.filterButton, filter === 'friends' && { backgroundColor: theme.primary }]}
                         onPress={() => setFilter('friends')}>
                         <Text style={[styles.filterText, filter === 'friends' && styles.filterTextActive]}>FRIENDS</Text>
                     </TouchableOpacity>
@@ -78,7 +81,7 @@ export default function LeaderboardScreen() {
                 />
 
                 {/* User Rank Footer */}
-                <View style={[styles.userRankFooter, { paddingBottom: insets.bottom + 10 }]}>
+                <View style={[styles.userRankFooter, { paddingBottom: insets.bottom + 10, backgroundColor: theme.backgroundEnd }]}>
                     <LeaderboardRow
                         rank={currentUserData.rank}
                         username={currentUserData.username}
@@ -98,7 +101,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 32,
         fontFamily: FONTS.bold,
-        color: Palette.textWhite,
+        color: '#FFFFFF',
         letterSpacing: 1,
         marginBottom: 20,
         paddingHorizontal: 20,
@@ -117,17 +120,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 8,
     },
-    filterActive: {
-        backgroundColor: Palette.primaryPink,
-    },
     filterText: {
-        color: Palette.textMuted,
+        color: '#AFAFAF',
         fontFamily: FONTS.bold,
         fontSize: 12,
         letterSpacing: 1,
     },
     filterTextActive: {
-        color: Palette.textWhite,
+        color: '#FFFFFF',
     },
     listContent: {
         paddingHorizontal: 20,
@@ -138,7 +138,6 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-        backgroundColor: '#1A0518',
         paddingHorizontal: 20,
         paddingTop: 16,
         borderTopWidth: 1,

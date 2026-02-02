@@ -1,4 +1,4 @@
-import { FONTS, Palette } from '@/constants/theme';
+import { FONTS, useTheme } from '@/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
@@ -22,17 +22,18 @@ export function SettingsItem({
     onPress,
     isDestructive = false
 }: Props) {
-    const iconColor = isDestructive ? '#FF453A' : Palette.textWhite;
-    const textColor = isDestructive ? '#FF453A' : Palette.textWhite;
+    const { theme } = useTheme();
+    const iconColor = isDestructive ? '#FF453A' : theme.textWhite;
+    const textColor = isDestructive ? '#FF453A' : theme.textWhite;
 
     return (
         <TouchableOpacity
-            style={styles.container}
+            style={[styles.container, { backgroundColor: theme.surface }]}
             onPress={type !== 'toggle' ? onPress : undefined}
             activeOpacity={type === 'toggle' ? 1 : 0.7}
             disabled={type === 'toggle'}
         >
-            <View style={styles.iconContainer}>
+            <View style={[styles.iconContainer, { backgroundColor: theme.overlay }]}>
                 <Ionicons name={icon} size={20} color={iconColor} />
             </View>
 
@@ -43,13 +44,13 @@ export function SettingsItem({
                     <Switch
                         value={value}
                         onValueChange={onValueChange}
-                        trackColor={{ false: '#3A3A3C', true: Palette.primaryPink }}
-                        thumbColor={Palette.textWhite}
+                        trackColor={{ false: '#3A3A3C', true: theme.primary }}
+                        thumbColor={theme.textWhite}
                         ios_backgroundColor="#3A3A3C"
                     />
                 )}
                 {type === 'link' && (
-                    <Ionicons name="chevron-forward" size={20} color={Palette.textMuted} />
+                    <Ionicons name="chevron-forward" size={20} color={theme.textMuted} />
                 )}
             </View>
         </TouchableOpacity>
@@ -61,7 +62,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: 16,
-        backgroundColor: '#2A1F2D', // Slightly lighter than background for card effect
         borderRadius: 16,
         marginBottom: 12,
     },
@@ -69,7 +69,6 @@ const styles = StyleSheet.create({
         width: 32,
         height: 32,
         borderRadius: 8,
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: 12,

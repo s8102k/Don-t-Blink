@@ -1,4 +1,4 @@
-import { FONTS, Palette } from '@/constants/theme';
+import { FONTS, useTheme } from '@/constants/theme';
 import React from 'react';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
@@ -9,6 +9,7 @@ interface NeonButtonProps extends TouchableOpacityProps {
 }
 
 export function NeonButton({ title, variant = 'primary', isLoading, style, disabled, ...props }: NeonButtonProps) {
+    const { theme } = useTheme();
     const isPrimary = variant === 'primary';
     const isOutline = variant === 'outline';
 
@@ -16,8 +17,19 @@ export function NeonButton({ title, variant = 'primary', isLoading, style, disab
         <TouchableOpacity
             style={[
                 styles.container,
-                isPrimary && styles.primary,
-                isOutline && styles.outline,
+                isPrimary && {
+                    backgroundColor: theme.primary,
+                    shadowColor: theme.primary,
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 10,
+                    elevation: 6,
+                },
+                isOutline && {
+                    backgroundColor: 'transparent',
+                    borderWidth: 2,
+                    borderColor: theme.primary,
+                },
                 disabled && styles.disabled,
                 style
             ]}
@@ -26,12 +38,12 @@ export function NeonButton({ title, variant = 'primary', isLoading, style, disab
             {...props}
         >
             {isLoading ? (
-                <ActivityIndicator color={isPrimary ? '#FFFFFF' : Palette.primaryPink} />
+                <ActivityIndicator color={isPrimary ? '#FFFFFF' : theme.primary} />
             ) : (
                 <Text style={[
                     styles.text,
                     isPrimary && styles.textPrimary,
-                    isOutline && styles.textOutline,
+                    isOutline && { color: theme.primary },
                     disabled && styles.textDisabled
                 ]}>
                     {title}
@@ -51,19 +63,6 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         paddingHorizontal: 24,
     },
-    primary: {
-        backgroundColor: Palette.primaryPink,
-        shadowColor: Palette.primaryPink,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 10,
-        elevation: 6,
-    },
-    outline: {
-        backgroundColor: 'transparent',
-        borderWidth: 2,
-        borderColor: Palette.primaryPink,
-    },
     disabled: {
         opacity: 0.6,
     },
@@ -75,9 +74,6 @@ const styles = StyleSheet.create({
     },
     textPrimary: {
         color: '#FFFFFF',
-    },
-    textOutline: {
-        color: Palette.primaryPink,
     },
     textDisabled: {
         color: '#CCCCCC',

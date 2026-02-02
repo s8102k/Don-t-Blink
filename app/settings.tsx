@@ -1,6 +1,6 @@
 import { GradientBackground } from '@/components/GradientBackground';
 import { SettingsItem } from '@/components/SettingsItem';
-import { FONTS, Palette } from '@/constants/theme';
+import { FONTS, useTheme } from '@/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
@@ -9,6 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SettingsScreen() {
     const router = useRouter();
+    const { theme, toggleTheme } = useTheme();
 
     // Determine which "settings" items are toggles vs links based on the design
     const [soundEffects, setSoundEffects] = useState(true);
@@ -25,17 +26,27 @@ export default function SettingsScreen() {
             <SafeAreaView style={styles.safeArea}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                        <Ionicons name="arrow-back" size={24} color={Palette.textWhite} />
+                        <Ionicons name="arrow-back" size={24} color={theme.textWhite} />
                     </TouchableOpacity>
                     <View>
-                        <Text style={styles.title}>SETTINGS</Text>
-                        <Text style={styles.subtitle}>Manage your game experience</Text>
+                        <Text style={[styles.title, { color: theme.textWhite }]}>SETTINGS</Text>
+                        <Text style={[styles.subtitle, { color: theme.textMuted }]}>Manage your game experience</Text>
                     </View>
                 </View>
 
                 <ScrollView style={styles.content} contentContainerStyle={styles.scrollContent}>
+                    {/* APPEARANCE */}
+                    <Text style={[styles.sectionTitle, { color: theme.primary }]}>APPEARANCE</Text>
+                    <SettingsItem
+                        icon="color-palette"
+                        label="Blue Version"
+                        type="toggle"
+                        value={theme.name === 'blue'}
+                        onValueChange={toggleTheme}
+                    />
+
                     {/* GAMEPLAY */}
-                    <Text style={styles.sectionTitle}>GAMEPLAY</Text>
+                    <Text style={[styles.sectionTitle, { color: theme.primary }]}>GAMEPLAY</Text>
                     <SettingsItem
                         icon="volume-high"
                         label="Sound Effects"
@@ -60,7 +71,7 @@ export default function SettingsScreen() {
 
                     {/* NOTIFICATIONS */}
                     <View style={styles.spacer} />
-                    <Text style={styles.sectionTitle}>NOTIFICATIONS</Text>
+                    <Text style={[styles.sectionTitle, { color: theme.primary }]}>NOTIFICATIONS</Text>
                     <SettingsItem
                         icon="trophy"
                         label="Daily Challenges"
@@ -78,7 +89,7 @@ export default function SettingsScreen() {
 
                     {/* SUPPORT */}
                     <View style={styles.spacer} />
-                    <Text style={styles.sectionTitle}>SUPPORT</Text>
+                    <Text style={[styles.sectionTitle, { color: theme.primary }]}>SUPPORT</Text>
                     <SettingsItem
                         icon="help-circle"
                         label="Help Center"
@@ -95,12 +106,13 @@ export default function SettingsScreen() {
                         icon="mail"
                         label="Contact Support"
                         type="link"
-                        onPress={() => router.push('/contact')}
+                        onPress={() => router.push('/contact' as any)}
                     />
+
 
                     {/* ACCOUNT */}
                     <View style={styles.spacer} />
-                    <Text style={styles.sectionTitle}>ACCOUNT</Text>
+                    <Text style={[styles.sectionTitle, { color: theme.primary }]}>ACCOUNT</Text>
                     <SettingsItem
                         icon="eye"
                         label="Public Profile"
@@ -118,11 +130,11 @@ export default function SettingsScreen() {
 
 
                     <View style={styles.footer}>
-                        <Text style={styles.footerText}>DON'T BLINK v1.0.4</Text>
+                        <Text style={[styles.footerText, { color: theme.textMuted, opacity: 0.5 }]}>DON'T BLINK v1.0.4</Text>
                         <View style={styles.footerLinks}>
-                            <TouchableOpacity><Text style={styles.footerLink}>Privacy Policy</Text></TouchableOpacity>
-                            <Text style={styles.footerDot}>•</Text>
-                            <TouchableOpacity><Text style={styles.footerLink}>Terms of Service</Text></TouchableOpacity>
+                            <TouchableOpacity><Text style={[styles.footerLink, { color: theme.textMuted }]}>Privacy Policy</Text></TouchableOpacity>
+                            <Text style={[styles.footerDot, { color: theme.textMuted }]}>•</Text>
+                            <TouchableOpacity><Text style={[styles.footerLink, { color: theme.textMuted }]}>Terms of Service</Text></TouchableOpacity>
                         </View>
                     </View>
                 </ScrollView>
@@ -146,13 +158,11 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 32,
         fontFamily: FONTS.bold,
-        color: Palette.textWhite,
         letterSpacing: 1,
         marginBottom: 4,
     },
     subtitle: {
         fontSize: 14,
-        color: '#8A8A8E', // Muted text
         fontFamily: FONTS.regular,
     },
     content: {
@@ -165,7 +175,6 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 12,
         fontFamily: FONTS.bold,
-        color: '#D0A0C0', // Muted pinkish/purple
         marginBottom: 12,
         marginTop: 8,
         letterSpacing: 1,
@@ -179,7 +188,6 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     footerText: {
-        color: '#534658',
         fontSize: 12,
         fontFamily: FONTS.bold,
         letterSpacing: 1.5,
@@ -190,11 +198,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     footerLink: {
-        color: '#8A8A8E',
         fontSize: 12,
     },
     footerDot: {
-        color: '#8A8A8E',
         marginHorizontal: 8,
     },
 });

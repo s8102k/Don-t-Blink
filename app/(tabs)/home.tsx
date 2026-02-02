@@ -1,6 +1,6 @@
 import { GradientBackground } from '@/components/GradientBackground';
 import { Logo } from '@/components/Logo';
-import { FONTS, Palette } from '@/constants/theme';
+import { FONTS, useTheme } from '@/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
 import React from 'react';
@@ -10,6 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export default function HomeScreen() {
     const insets = useSafeAreaInsets();
     const router = useRouter();
+    const { theme } = useTheme();
 
     return (
         <GradientBackground>
@@ -17,7 +18,7 @@ export default function HomeScreen() {
                 {/* Settings Button */}
                 <Link href="/settings" asChild>
                     <TouchableOpacity style={styles.iconButton}>
-                        <Ionicons name="settings-sharp" size={24} color={Palette.textWhite} />
+                        <Ionicons name="settings-sharp" size={24} color={theme.textWhite} />
                     </TouchableOpacity>
                 </Link>
             </View>
@@ -27,24 +28,43 @@ export default function HomeScreen() {
                     <Logo />
 
                     <Text style={styles.dontText}>DON'T</Text>
-                    <Text style={styles.blinkText}>BLINK</Text>
+                    <Text style={[styles.blinkText, { color: theme.primary }]}>BLINK</Text>
 
                     <Text style={styles.subtitle}>REAL-TIME FACE CHALLENGE</Text>
 
-                    <View style={styles.divider} />
+                    <View style={[styles.divider, { backgroundColor: theme.surface === '#001020' ? 'rgba(0, 240, 255, 0.2)' : '#3D2039' }]} />
                 </View>
 
                 <View style={styles.actionContainer}>
                     <TouchableOpacity
-                        style={styles.playButton}
+                        style={[styles.playButton, { backgroundColor: theme.primary, shadowColor: theme.primary }]}
                         activeOpacity={0.8}
                         onPress={() => {
                             // Navigate to Game Flow
                             router.push('/matchmaking');
-                            console.log("Play pressed");
                         }}
                     >
                         <Text style={styles.playButtonText}>LET'S PLAY</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[styles.playButton, { backgroundColor: 'transparent', borderWidth: 1, borderColor: theme.primary, marginTop: 16 }]}
+                        activeOpacity={0.8}
+                        onPress={() => {
+                            router.push('/countdown');
+                        }}
+                    >
+                        <Text style={[styles.playButtonText, { color: theme.primary }]}>SOLO PLAY</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={styles.howToPlayButton}
+                        activeOpacity={0.8}
+                        onPress={() => {
+                            router.push('/landing');
+                        }}
+                    >
+                        <Text style={[styles.howToPlayText, { color: theme.textMuted }]}>HOW TO PLAY</Text>
                     </TouchableOpacity>
 
                     <Text style={styles.version}>v2.0.4 • BETA</Text>
@@ -81,7 +101,7 @@ const styles = StyleSheet.create({
         fontSize: 48,
         fontFamily: FONTS.bold,
         fontWeight: '900',
-        color: Palette.textWhite,
+        color: '#FFFFFF', // Palette.textWhite but explicit
         letterSpacing: 2,
         lineHeight: 52,
     },
@@ -89,7 +109,6 @@ const styles = StyleSheet.create({
         fontSize: 48,
         fontFamily: FONTS.bold,
         fontWeight: '900',
-        color: Palette.primaryPink,
         letterSpacing: 2,
         marginTop: -8,
         lineHeight: 52,
@@ -105,7 +124,6 @@ const styles = StyleSheet.create({
     divider: {
         width: 40,
         height: 1,
-        backgroundColor: '#3D2039',
         marginTop: 20,
     },
     actionContainer: {
@@ -116,11 +134,9 @@ const styles = StyleSheet.create({
     playButton: {
         width: '100%',
         height: 56,
-        backgroundColor: Palette.primaryPink,
         borderRadius: 28,
         alignItems: 'center',
         justifyContent: 'center',
-        shadowColor: Palette.primaryPink,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
@@ -128,7 +144,7 @@ const styles = StyleSheet.create({
         marginBottom: 24,
     },
     playButtonText: {
-        color: Palette.textWhite,
+        color: '#FFFFFF',
         fontSize: 18,
         fontFamily: FONTS.bold,
         fontWeight: 'bold',
@@ -138,5 +154,16 @@ const styles = StyleSheet.create({
         color: '#666',
         fontSize: 10,
         letterSpacing: 2,
+    },
+    howToPlayButton: {
+        marginBottom: 24,
+        padding: 10,
+    },
+    howToPlayText: {
+        color: '#AFAFAF',
+        fontSize: 14,
+        fontFamily: FONTS.medium,
+        letterSpacing: 1.5,
+        textDecorationLine: 'underline',
     },
 });

@@ -1,28 +1,17 @@
+
 import { GradientBackground } from '@/components/GradientBackground';
 import { Logo } from '@/components/Logo';
 import { ProgressBar } from '@/components/ProgressBar';
-import { auth } from '@/config/firebase';
-import { FONTS, Palette } from '@/constants/theme';
+import { FONTS, useTheme } from '@/constants/theme';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { onAuthStateChanged, User } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function Splash() {
     const router = useRouter();
     const [progress, setProgress] = useState(0);
-    const [initializing, setInitializing] = useState(true);
-    const [user, setUser] = useState<User | null>(null);
-
-    // Handle user state changes
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setUser(user);
-            if (initializing) setInitializing(false);
-        });
-        return unsubscribe;
-    }, []);
+    const { theme } = useTheme();
 
     useEffect(() => {
         const duration = 2500; // 2.5 seconds splash
@@ -35,13 +24,9 @@ export default function Splash() {
                 const next = prev + stepSize;
                 if (next >= 1) {
                     clearInterval(timer);
-                    // Navigate based on auth state
+                    // Navigate to home
                     setTimeout(() => {
-                        if (user) {
-                            router.replace('/(tabs)/home' as any);
-                        } else {
-                            router.replace('/sign-in' as any);
-                        }
+                        router.replace('/(tabs)/home' as any);
                     }, 200);
                     return 1;
                 }
@@ -60,11 +45,11 @@ export default function Splash() {
                     <Logo />
 
                     <Text style={styles.dontText}>DON'T</Text>
-                    <Text style={styles.blinkText}>BLINK</Text>
+                    <Text style={[styles.blinkText, { color: theme.primary }]}>BLINK</Text>
 
                     <Text style={styles.subtitle}>REAL-TIME FACE CHALLENGE</Text>
 
-                    <View style={styles.divider} />
+                    <View style={[styles.divider, { backgroundColor: theme.overlay }]} />
 
                     <Text style={styles.judgeText}>3 Seconds to Judge</Text>
                 </View>
@@ -92,7 +77,7 @@ const styles = StyleSheet.create({
         fontSize: 48,
         fontFamily: FONTS.bold,
         fontWeight: '900',
-        color: Palette.textWhite,
+        color: '#FFFFFF',
         letterSpacing: 2,
         lineHeight: 52,
     },
@@ -100,7 +85,6 @@ const styles = StyleSheet.create({
         fontSize: 48,
         fontFamily: FONTS.bold,
         fontWeight: '900',
-        color: Palette.primaryPink,
         letterSpacing: 2,
         marginTop: -8,
         lineHeight: 52,
@@ -116,7 +100,6 @@ const styles = StyleSheet.create({
     divider: {
         width: 40,
         height: 1,
-        backgroundColor: '#3D2039',
         marginTop: 20,
     },
     judgeText: {

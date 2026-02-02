@@ -1,4 +1,4 @@
-import { FONTS, Palette } from '@/constants/theme';
+import { FONTS, useTheme } from '@/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -11,6 +11,7 @@ interface MatchHistoryItemProps {
 }
 
 export function MatchHistoryItem({ result, opponentName, score, date }: MatchHistoryItemProps) {
+    const { theme } = useTheme();
     const isWin = result === 'WIN';
 
     return (
@@ -20,21 +21,21 @@ export function MatchHistoryItem({ result, opponentName, score, date }: MatchHis
                     <Ionicons
                         name={isWin ? "trophy" : "close"}
                         size={16}
-                        color={Palette.textWhite}
+                        color="#FFFFFF"
                     />
                 </View>
             </View>
 
             <View style={styles.infoContainer}>
-                <Text style={styles.opponent}>vs {opponentName}</Text>
-                <Text style={styles.date}>{date}</Text>
+                <Text style={[styles.opponent, { color: theme.textWhite }]}>vs {opponentName}</Text>
+                <Text style={[styles.date, { color: theme.textMuted }]}>{date}</Text>
             </View>
 
             <View style={styles.scoreContainer}>
                 <Text style={[styles.resultText, isWin ? styles.winText : styles.lossText]}>
                     {result}
                 </Text>
-                <Text style={styles.score}>{score}</Text>
+                <Text style={[styles.score, { color: theme.textMuted }]}>{score}</Text>
             </View>
         </View>
     );
@@ -68,13 +69,11 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     opponent: {
-        color: Palette.textWhite,
         fontFamily: FONTS.bold,
         fontSize: 16,
         marginBottom: 2,
     },
     date: {
-        color: Palette.textMuted,
         fontFamily: FONTS.medium,
         fontSize: 12,
     },
@@ -94,7 +93,6 @@ const styles = StyleSheet.create({
         color: '#F44336',
     },
     score: {
-        color: Palette.textMuted,
         fontFamily: FONTS.regular,
         fontSize: 12,
     },

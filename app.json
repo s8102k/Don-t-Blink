@@ -10,8 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.dontblink.app",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "bundleIdentifier": "com.dontblink.app"
     },
     "android": {
       "package": "com.dontblink.app",
@@ -22,8 +21,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false,
-      "googleServicesFile": "./google-services.json"
+      "predictiveBackGestureEnabled": false
     },
     "web": {
       "output": "static",
@@ -43,7 +41,13 @@
           }
         }
       ],
-      "@react-native-firebase/app"
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "We need your permission to show the camera",
+          "enableMicrophonePermission": false
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

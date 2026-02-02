@@ -1,26 +1,26 @@
-import { DarkTheme, ThemeProvider } from '@react-navigation/native';
+import { ThemeProvider } from '@/constants/theme';
+import { DarkTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-// import 'react-native-reanimated';
 
 export default function RootLayout() {
   return (
-    <ThemeProvider value={DarkTheme}>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="sign-in" options={{ headerShown: false }} />
-        <Stack.Screen name="sign-up" options={{ headerShown: false }} />
-        <Stack.Screen name="settings" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="help" options={{ headerShown: false }} />
-        <Stack.Screen name="about" options={{ headerShown: false }} />
-        <Stack.Screen name="contact" options={{ headerShown: false }} />
-        <Stack.Screen name="matchmaking" options={{ headerShown: false }} />
-        <Stack.Screen name="verify-email" options={{ headerShown: false }} />
-        <Stack.Screen name="forgot-password" options={{ headerShown: false }} />
-        <Stack.Screen name="reset-password" options={{ headerShown: false }} />
-      </Stack>
-      <StatusBar style="light" />
+    <ThemeProvider>
+      <NavigationThemeProvider value={DarkTheme}>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="settings" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="help" options={{ headerShown: false }} />
+          <Stack.Screen name="about" options={{ headerShown: false }} />
+          <Stack.Screen name="contact" options={{ headerShown: false }} />
+          <Stack.Screen name="matchmaking" options={{ headerShown: false }} />
+          <Stack.Screen name="landing" options={{ headerShown: false }} />
+          <Stack.Screen name="countdown" options={{ headerShown: false }} />
+          <Stack.Screen name="game" options={{ headerShown: false }} />
+        </Stack>
+        <StatusBar style="light" />
+      </NavigationThemeProvider>
     </ThemeProvider>
   );
 }

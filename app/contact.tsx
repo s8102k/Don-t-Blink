@@ -1,5 +1,5 @@
 import { GradientBackground } from '@/components/GradientBackground';
-import { FONTS, Palette } from '@/constants/theme';
+import { FONTS, useTheme } from '@/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ContactScreen() {
     const router = useRouter();
+    const { theme } = useTheme();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
@@ -23,9 +24,9 @@ export default function ContactScreen() {
             <SafeAreaView style={styles.safeArea}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                        <Ionicons name="arrow-back" size={24} color={Palette.textWhite} />
+                        <Ionicons name="arrow-back" size={24} color={theme.textWhite} />
                     </TouchableOpacity>
-                    <Text style={styles.title}>CONTACT SUPPORT</Text>
+                    <Text style={[styles.title, { color: theme.textWhite }]}>CONTACT SUPPORT</Text>
                 </View>
 
                 <KeyboardAvoidingView
@@ -33,27 +34,27 @@ export default function ContactScreen() {
                     style={styles.keyboardAvoid}
                 >
                     <ScrollView contentContainerStyle={styles.content}>
-                        <Text style={styles.subtitle}>
+                        <Text style={[styles.subtitle, { color: theme.textMuted }]}>
                             Have a question or feedback? Fill out the form below and we'll be in touch.
                         </Text>
 
                         <View style={styles.formGroup}>
-                            <Text style={styles.label}>Name</Text>
+                            <Text style={[styles.label, { color: theme.primary }]}>Name</Text>
                             <TextInput
-                                style={styles.input}
+                                style={[styles.input, { color: theme.textWhite }]}
                                 placeholder="Enter your name"
-                                placeholderTextColor={Palette.textMuted}
+                                placeholderTextColor={theme.textMuted}
                                 value={name}
                                 onChangeText={setName}
                             />
                         </View>
 
                         <View style={styles.formGroup}>
-                            <Text style={styles.label}>Email</Text>
+                            <Text style={[styles.label, { color: theme.primary }]}>Email</Text>
                             <TextInput
-                                style={styles.input}
+                                style={[styles.input, { color: theme.textWhite }]}
                                 placeholder="Enter your email"
-                                placeholderTextColor={Palette.textMuted}
+                                placeholderTextColor={theme.textMuted}
                                 value={email}
                                 onChangeText={setEmail}
                                 keyboardType="email-address"
@@ -62,11 +63,11 @@ export default function ContactScreen() {
                         </View>
 
                         <View style={styles.formGroup}>
-                            <Text style={styles.label}>Message</Text>
+                            <Text style={[styles.label, { color: theme.primary }]}>Message</Text>
                             <TextInput
-                                style={[styles.input, styles.textArea]}
+                                style={[styles.input, styles.textArea, { color: theme.textWhite }]}
                                 placeholder="How can we help?"
-                                placeholderTextColor={Palette.textMuted}
+                                placeholderTextColor={theme.textMuted}
                                 value={message}
                                 onChangeText={setMessage}
                                 multiline
@@ -76,10 +77,10 @@ export default function ContactScreen() {
                         </View>
 
                         <TouchableOpacity
-                            style={styles.submitButton}
+                            style={[styles.submitButton, { backgroundColor: theme.primary, shadowColor: theme.primary }]}
                             onPress={handleSubmit}
                         >
-                            <Text style={styles.submitButtonText}>SEND MESSAGE</Text>
+                            <Text style={[styles.submitButtonText, { color: '#FFFFFF' }]}>SEND MESSAGE</Text>
                         </TouchableOpacity>
                     </ScrollView>
                 </KeyboardAvoidingView>
@@ -106,7 +107,6 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 24,
         fontFamily: FONTS.bold,
-        color: Palette.textWhite,
         letterSpacing: 1,
     },
     content: {
@@ -114,7 +114,6 @@ const styles = StyleSheet.create({
     },
     subtitle: {
         fontSize: 14,
-        color: Palette.textMuted,
         fontFamily: FONTS.regular,
         marginBottom: 32,
         lineHeight: 20,
@@ -124,7 +123,6 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: 12,
-        color: Palette.primaryPink,
         fontFamily: FONTS.bold,
         marginBottom: 8,
         letterSpacing: 0.5,
@@ -133,7 +131,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255,255,255,0.05)',
         borderRadius: 8,
         padding: 16,
-        color: Palette.textWhite,
         fontFamily: FONTS.regular,
         fontSize: 16,
         borderWidth: 1,
@@ -143,19 +140,16 @@ const styles = StyleSheet.create({
         minHeight: 120,
     },
     submitButton: {
-        backgroundColor: Palette.primaryPink,
         borderRadius: 30,
         paddingVertical: 16,
         alignItems: 'center',
         marginTop: 20,
-        shadowColor: Palette.primaryPink,
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 10,
         elevation: 5,
     },
     submitButtonText: {
-        color: Palette.textWhite,
         fontFamily: FONTS.bold,
         fontSize: 16,
         letterSpacing: 1,

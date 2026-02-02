@@ -1,4 +1,4 @@
-import { Palette } from '@/constants/theme';
+import { useTheme } from '@/constants/theme';
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -8,15 +8,16 @@ interface Props {
 }
 
 export function ProgressBar({ progress = 0.85 }: Props) {
+    const { theme } = useTheme();
+
     return (
         <View style={styles.container}>
             <View style={styles.labelContainer}>
-
                 <Text style={styles.percent}>{Math.round(progress * 100)}%</Text>
             </View>
             <View style={styles.barBackground}>
                 <LinearGradient
-                    colors={[Palette.primaryPink, '#C70063']} // Gradient for bar
+                    colors={[theme.primary, theme.name === 'blue' ? '#00A0FF' : '#C70063']} // Gradient for bar
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                     style={[styles.barFill, { width: `${progress * 100}%` }]}
@@ -34,17 +35,11 @@ const styles = StyleSheet.create({
     },
     labelContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-end', // Only percent shown now
         marginBottom: 8,
     },
-    label: {
-        color: '#D04090', // Muted pink
-        fontSize: 12,
-        fontWeight: 'bold',
-        letterSpacing: 1,
-    },
     percent: {
-        color: Palette.textMuted,
+        color: '#AFAFAF', // theme.textMuted
         fontSize: 12,
     },
     barBackground: {

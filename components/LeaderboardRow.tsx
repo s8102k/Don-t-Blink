@@ -1,4 +1,4 @@
-import { FONTS, Palette } from '@/constants/theme';
+import { FONTS, useTheme } from '@/constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
@@ -12,12 +12,14 @@ interface LeaderboardRowProps {
 }
 
 export function LeaderboardRow({ rank, username, score, avatarUrl, isCurrentUser }: LeaderboardRowProps) {
+    const { theme } = useTheme();
+
     const getRankColor = (r: number) => {
         switch (r) {
             case 1: return '#FFD700'; // Gold
             case 2: return '#C0C0C0'; // Silver
             case 3: return '#CD7F32'; // Bronze
-            default: return Palette.textWhite;
+            default: return theme.textWhite;
         }
     };
 
@@ -25,12 +27,19 @@ export function LeaderboardRow({ rank, username, score, avatarUrl, isCurrentUser
     const rankColor = getRankColor(rank);
 
     return (
-        <View style={[styles.container, isCurrentUser && styles.currentUserContainer]}>
+        <View style={[
+            styles.container,
+            isCurrentUser && {
+                backgroundColor: theme.name === 'blue' ? 'rgba(0, 240, 255, 0.15)' : 'rgba(255, 0, 127, 0.15)',
+                borderColor: theme.primary,
+                borderWidth: 1,
+            }
+        ]}>
             <View style={styles.rankContainer}>
                 {isTop3 ? (
                     <Ionicons name="trophy" size={20} color={rankColor} />
                 ) : (
-                    <Text style={styles.rankText}>{rank}</Text>
+                    <Text style={[styles.rankText, { color: theme.textMuted }]}>{rank}</Text>
                 )}
             </View>
 
@@ -38,17 +47,24 @@ export function LeaderboardRow({ rank, username, score, avatarUrl, isCurrentUser
                 {avatarUrl ? (
                     <Image source={{ uri: avatarUrl }} style={styles.avatar} />
                 ) : (
-                    <View style={styles.avatarPlaceholder}>
-                        <Text style={styles.avatarLetter}>{username.charAt(0).toUpperCase()}</Text>
+                    <View style={[styles.avatarPlaceholder, { backgroundColor: theme.surface }]}>
+                        <Text style={[styles.avatarLetter, { color: theme.textWhite }]}>{username.charAt(0).toUpperCase()}</Text>
                     </View>
                 )}
             </View>
 
-            <Text style={[styles.username, isCurrentUser && styles.currentUserName]} numberOfLines={1}>
+            <Text
+                style={[
+                    styles.username,
+                    { color: theme.textWhite },
+                    isCurrentUser && { color: theme.primary, fontFamily: FONTS.bold }
+                ]}
+                numberOfLines={1}
+            >
                 {username}
             </Text>
 
-            <Text style={styles.score}>{score.toLocaleString()}</Text>
+            <Text style={[styles.score, { color: theme.primary }]}>{score.toLocaleString()}</Text>
         </View>
     );
 }
@@ -63,11 +79,6 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         marginBottom: 8,
     },
-    currentUserContainer: {
-        backgroundColor: 'rgba(255, 0, 255, 0.15)',
-        borderColor: Palette.primaryPink,
-        borderWidth: 1,
-    },
     rankContainer: {
         width: 30,
         alignItems: 'center',
@@ -75,7 +86,6 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     rankText: {
-        color: Palette.textMuted,
         fontFamily: FONTS.bold,
         fontSize: 16,
     },
@@ -93,27 +103,19 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: '#3D2039',
         alignItems: 'center',
         justifyContent: 'center',
     },
     avatarLetter: {
-        color: Palette.textWhite,
         fontFamily: FONTS.bold,
         fontSize: 18,
     },
     username: {
         flex: 1,
-        color: Palette.textWhite,
         fontFamily: FONTS.medium,
         fontSize: 16,
     },
-    currentUserName: {
-        color: Palette.primaryPink,
-        fontFamily: FONTS.bold,
-    },
     score: {
-        color: Palette.primaryPink,
         fontFamily: FONTS.bold,
         fontSize: 16,
     },
